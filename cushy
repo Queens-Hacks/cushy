@@ -1,0 +1,15 @@
+#!/bin/bash
+
+export LESSOPEN="| /path/to/src-hilite-lesspipe.sh %s"
+export LESS=' -R '
+
+mkfifo pipe
+TEXT=$(curl "$@")
+echo "$TEXT" | less
+
+read -p "Are you sure you want to install this software? " -n 1 -r
+echo    # (optional) move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+        echo "$TEXT" | sh
+        fi
+# rm pipe
