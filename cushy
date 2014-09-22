@@ -1,24 +1,41 @@
 #!/bin/bash
+set -e # Abort on errors
 
-pipe_path="/tmp/cushy_pipe"
+function show_help() {
+cat << EOF
+Usage: ${0##*/} [-c CURL_ARGS] [-e EDITOR] [-s SHELL] URL
+Download URL, display it in EDITOR, and then, after promting, execute it with SHELL
+EOF
+}
 
-function run_cushy {
-	mkfifo $pipe_path
-	TEXT=$(curl "$@")
-	echo "$TEXT" | less
+# Possible command line arguments (do argument parsing later)
+CURL_ARGS=""
+SHELL='sh'
+EDITOR=$EDITOR || "nano" # default to running nano
 
+function run_cushy() {
+	# Create a temporary directory
+	CUSHY_TEMP=`mktemp -d 2>/dev/null || mktemp -d -t 'cushy_tmpdir'`
+	function clean_up() {
+		rm -r "$CUSHY_TEMP"
+		exit
+	}
+	trap clean_up EXIT
+	
+	# Download the file and write to it
+	FILENAME="$CUSHY_TEMP/$(basename $1)"
+	curl $CURL_ARGS "$1" > "$FILENAME"
+	
+	# Run the editor
+	"$EDITOR" "$FILENAME"
+	
+	# Ask if we should install
 	read -p "Are you sure you want to install this software? " -n 1 -r
 	echo
 	if [[ $REPLY =~ ^[Yy]$ ]]; then
-    	echo "$TEXT" | sh
+		# Run the program
+		"$SHELL" "$FILENAME"
 	fi
 }
 
-function clean_up {
-	rm $pipe_path
-	exit
-}
-
-trap clean_up EXIT
 run_cushy
-
