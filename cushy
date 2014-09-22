@@ -28,14 +28,14 @@ function run_cushy() {
 	curl $CURL_ARGS "$RESOURCE" > "$FILENAME"
 	
 	# Run the editor
-	"$EDITOR" "$FILENAME"
+	$EDITOR "$FILENAME"
 	
 	# Ask if we should install
 	read -p "Are you sure you want to install this software? " -n 1 -r
 	echo
 	if [[ $REPLY =~ ^[Yy]$ ]]; then
 		# Run the program
-		"$SHELL" "$FILENAME"
+		$SHELL "$FILENAME"
 	fi
 }
 
