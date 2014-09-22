@@ -1,6 +1,8 @@
 #!/bin/bash
 
-mkfifo pipe
+pipe_path="/tmp/cushy_pipe"
+
+mkfifo $pipe_path
 TEXT=$(curl "$@")
 echo "$TEXT" | less
 
@@ -9,3 +11,5 @@ echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo "$TEXT" | sh
 fi
+
+rm $pipe_path
