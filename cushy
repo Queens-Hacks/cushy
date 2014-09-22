@@ -2,14 +2,23 @@
 
 pipe_path="/tmp/cushy_pipe"
 
-mkfifo $pipe_path
-TEXT=$(curl "$@")
-echo "$TEXT" | less
+function run_cushy {
+	mkfifo $pipe_path
+	TEXT=$(curl "$@")
+	echo "$TEXT" | less
 
-read -p "Are you sure you want to install this software? " -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-    echo "$TEXT" | sh
-fi
+	read -p "Are you sure you want to install this software? " -n 1 -r
+	echo
+	if [[ $REPLY =~ ^[Yy]$ ]]; then
+    	echo "$TEXT" | sh
+	fi
+}
 
-rm $pipe_path
+function clean_up {
+	rm $pipe_path
+	exit
+}
+
+trap clean_up EXIT
+run_cushy
+
