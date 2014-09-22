@@ -22,16 +22,16 @@ function run_cushy() {
 		exit
 	}
 	trap clean_up EXIT
-	
+
 	# Download the file and write to it
 	FILENAME="$CUSHY_TEMP/$(basename $RESOURCE)"
 	curl $CURL_ARGS "$RESOURCE" > "$FILENAME"
-	
+
 	# Run the editor
 	$EDITOR "$FILENAME"
-	
+
 	# Ask if we should install
-	read -p "Are you sure you want to install this software? " -n 1 -r
+	read -p "Are you sure you want to install this software? (y/n)" -r
 	echo
 	if [[ $REPLY =~ ^[Yy]$ ]]; then
 		# Run the program
