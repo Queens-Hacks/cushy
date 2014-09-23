@@ -5,6 +5,8 @@ function show_help() {
 cat << EOF
 Usage: ${0##*/} [-c CURL_ARGS] [-e EDITOR] [-s SHELL] URL
 Download URL, display it in EDITOR, and then, after prompting, execute it with SHELL
+
+If editor flag not set, uses $EDITOR, otherwise defaults to vi
 EOF
 }
 
@@ -12,7 +14,41 @@ EOF
 CURL_ARGS=""
 SHELL='sh'
 EDITOR=${EDITOR:-vi}
-RESOURCE="$1"
+RESOURCE=""
+
+function parse_args() {
+	# A POSIX variable
+	# Reset in case getopts has been used previously in the shell.
+	OPTIND=1
+
+	# Initialize our own variables:
+	output_file=""
+	verbose=0
+
+	while getopts "h?cse:" opt; do
+		case "$opt" in
+		h|\?)
+			show_help
+			exit 0
+			;;
+		c)
+			CURL_ARGS=$OPTARG
+			;;
+		s)
+			SHELL=$OPTARG
+			;;
+		e)
+			EDITOR=$OPTARG
+			;;
+		esac
+	done
+
+	shift $((OPTIND-1))
+
+	[ "$1" = "--" ] && shift
+
+	RESOURCE="$1"
+}
 
 function run_cushy() {
 	# Create a temporary directory
@@ -39,4 +75,5 @@ function run_cushy() {
 	fi
 }
 
+parse_args "$@"
 run_cushy
