@@ -31,7 +31,7 @@ function run_cushy() {
 	$EDITOR "$FILENAME"
 
 	# Ask if we should install
-	read -p "Are you sure you want to install this software? (y/n)" -r
+	read -p "Are you sure you want to install this software? (y/n) " -r
 	echo
 	if [[ $REPLY =~ ^[Yy]$ ]]; then
 		# Run the program
