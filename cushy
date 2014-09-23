@@ -11,7 +11,7 @@ EOF
 # Possible command line arguments (do argument parsing later)
 CURL_ARGS=""
 SHELL='sh'
-EDITOR=${EDITOR:-nano}
+EDITOR=${EDITOR:-vi}
 RESOURCE="$1"
 
 function run_cushy() {
