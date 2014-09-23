@@ -4,7 +4,7 @@ set -e # Abort on errors
 function show_help() {
 cat << EOF
 Usage: ${0##*/} [-c CURL_ARGS] [-e EDITOR] [-s SHELL] URL
-Download URL, display it in EDITOR, and then, after promting, execute it with SHELL
+Download URL, display it in EDITOR, and then, after prompting, execute it with SHELL
 EOF
 }
 
